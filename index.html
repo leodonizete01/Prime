@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Wealth | Gestão de Patrimônio e Assessoria Financeira</title>
+  <meta name="description" content="Plataforma de alta renda de investimentos com assessoria personalizada, taxa zero em renda fixa, inteligência de alocação de ativos e total conformidade com CVM, ANBIMA e FGC.">
+  
+  <!-- Fontes Google: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Ícones Phosphor / FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js para simulações e gráficos financeiros -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Folha de Estilos Principal -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       BARRA DE COTAÇÕES EM TEMPO REAL (MARKET TICKER)
+       ========================================================================= -->
+  <aside class="market-ticker" aria-label="Cotações de mercado">
+    <div class="ticker-track" id="tickerTrack">
+      <div class="ticker-item"><span class="ticker-label">IBOVESPA</span> <span class="ticker-val">128.450 pts</span> <span class="ticker-change pos"><i class="fa-solid fa-arrow-trend-up"></i> +0,82%</span></div>
+      <div class="ticker-item"><span class="ticker-label">DÓLAR (USD)</span> <span class="ticker-val">R$ 5,14</span> <span class="ticker-change neg"><i class="fa-solid fa-arrow-trend-down"></i> -0,38%</span></div>
+      <div class="ticker-item"><span class="ticker-label">EURO (EUR)</span> <span class="ticker-val">R$ 5,58</span> <span class="ticker-change pos"><i class="fa-solid fa-arrow-trend-up"></i> +0,12%</span></div>
+      <div class="ticker-item"><span class="ticker-label">TAXA SELIC</span> <span class="ticker-val">10,50% a.a.</span> <span class="ticker-change neutral"><i class="fa-solid fa-minus"></i> 0,00%</span></div>
+      <div class="ticker-item"><span class="ticker-label">CDI</span> <span class="ticker-val">10,40% a.a.</span> <span class="ticker-change neutral"><i class="fa-solid fa-minus"></i> 0,00%</span></div>
+      <div class="ticker-item"><span class="ticker-label">IPCA (12M)</span> <span class="ticker-val">3,98%</span> <span class="ticker-change pos"><i class="fa-solid fa-arrow-trend-up"></i> +0,05%</span></div>
+      <div class="ticker-item"><span class="ticker-label">S&amp;P 500</span> <span class="ticker-val">5.340 pts</span> <span class="ticker-change pos"><i class="fa-solid fa-arrow-trend-up"></i> +0,64%</span></div>
+      <div class="ticker-item"><span class="ticker-label">BITCOIN</span> <span class="ticker-val">R$ 348.210</span> <span class="ticker-change pos"><i class="fa-solid fa-arrow-trend-up"></i> +2,15%</span></div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       CABEÇALHO INSTITUCIONAL & NAVEGAÇÃO
+       ========================================================================= -->
+  <header class="site-header" id="header">
+    <div class="container header-container">
+      <a href="#hero" class="brand-logo" aria-label="Prime Wealth - Página Inicial">
+        <div class="logo-mark">
+          <img src="assets/logo-prime-wealth.jpg" alt="Prime Wealth Logo" class="brand-logo-img">
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">PRIME WEALTH</span>
+          <span class="logo-subtitle">INVESTIMENTOS</span>
+        </div>
+      </a>
+
+      <!-- Menu Principal Desktop Simplificado & Alinhado -->
+      <nav class="nav-menu" id="navMenu" aria-label="Navegação Principal">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#sobre" class="nav-link">Sobre</a></li>
+          <li class="nav-item"><a href="#produtos" class="nav-link">Produtos</a></li>
+          <li class="nav-item"><a href="#custos" class="nav-link">Custos</a></li>
+          <li class="nav-item"><a href="#simulador" class="nav-link">Simulador</a></li>
+          <li class="nav-item"><a href="#suitability" class="nav-link">Perfil</a></li>
+          <li class="nav-item"><a href="#research" class="nav-link">Research</a></li>
+          <li class="nav-item"><a href="#area-cliente" class="nav-link">Área do Cliente</a></li>
+          <li class="nav-item"><a href="#suporte" class="nav-link">Suporte</a></li>
+        </ul>
+      </nav>
+
+      <!-- Ações do Cabeçalho: Login, Cadastro, Sair e Pill do Usuário -->
+      <div class="header-actions">
+        <button class="btn btn-outline-nav btn-sm" onclick="openModal('modalLogin')" id="btnOpenLoginModal" aria-label="Entrar na Conta">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          <span>Entrar</span>
+        </button>
+        <button class="btn btn-gold btn-header-cta" id="btnOpenAccountModal" onclick="openModal('modalOpenAccount')" aria-label="Abrir Nova Conta">
+          <span>Abra sua Conta</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <!-- Pill com avatar de iniciais + nome do usuário (inicialmente oculto) -->
+        <div class="header-user-pill" id="headerUserInfo" style="display:none;">
+          <div class="header-avatar-initials" id="headerUserInitials"></div>
+          <span id="headerUserName"></span>
+        </div>
+
+        <!-- Botão Sair (inicialmente oculto) -->
+        <button class="btn btn-outline-nav btn-sm" id="btnLogoutHeader" style="display:none;" onclick="handleLogout()" aria-label="Sair da Conta">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Sair</span>
+        </button>
+
+        <button class="hamburger" id="btnHamburger" aria-label="Menu Mobile" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================================================================
+         1. HERO SECTION & ESTRUTURA DE CONFIANÇA
+         ========================================================================= -->
+    <section class="hero-section" id="hero">
+      <div class="hero-pattern-overlay"></div>
+      <div class="container hero-container">
+        
+        <div class="hero-content">
+          <div class="badge-pill">
+            <span class="dot-live"></span>
+            <span>Projeto TCC • Plataforma de Investimentos e Educação Financeira</span>
+          </div>
+          
+          <h1 class="hero-title">
+            Multiplique seu patrimônio com a solidez de quem <span class="highlight-gold">entende o mercado</span>.
+          </h1>
+          
+          <p class="hero-description">
+            Unimos inteligência de alocação de ativos, tecnologia de ponta e assessoria exclusiva sem conflito de interesses para você alcançar a independência financeira com máxima segurança.
+          </p>
+          
+          <div class="hero-cta-group">
+            <button class="btn btn-gold btn-lg" onclick="openModal('modalOpenAccount')">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Abrir Conta Gratuita</span>
+            </button>
+            <button class="btn btn-outline-light btn-lg" onclick="scrollToSection('simulador')">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Simular Rentabilidade</span>
+            </button>
+            <button class="btn btn-text-advisor" onclick="openAdvisorModal()">
+              <i class="fa-regular fa-comments"></i>
+              <span>Falar com um Assessor</span>
+            </button>
+          </div>
+
+          <!-- Destaques de Credibilidade em Números Auditados -->
+          <div class="hero-stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">R$ 8.4 Bi</span>
+              <span class="stat-label">Sob custódia e assessoria</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">+65.000</span>
+              <span class="stat-label">Clientes investidores ativos</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">98.6%</span>
+              <span class="stat-label">Índice de satisfação (NPS 89)</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">14 Anos</span>
+              <span class="stat-label">De histórico e solidez</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Visual da Plataforma / App Mockup -->
+        <div class="hero-preview">
+          <div class="glass-card hero-asset-card">
+            <div class="card-glass-header">
+              <div class="client-mini-badge">
+                <div class="avatar-ph">VC</div>
+                <div>
+                  <small>Carteira Recomendada</small>
+                  <strong>Perfil Moderado Otimizado</strong>
+                </div>
+              </div>
+              <span class="status-chip success">
+                <i class="fa-solid fa-arrow-trend-up"></i> +18,4% no ano
+              </span>
+            </div>
+
+            <div class="asset-balance">
+              <span class="balance-label">Patrimônio Consolidado</span>
+              <span class="balance-val" id="heroLiveBalance">R$ 384.520,40</span>
+              <div class="balance-meta">
+                <span class="badge-tag">142% do CDI</span>
+                <span class="badge-tag">Garantia FGC Ativa</span>
+              </div>
+            </div>
+
+            <!-- Mini gráfico demonstrativo -->
+            <div class="chart-container-mini">
+              <canvas id="heroMiniChart" height="110"></canvas>
+            </div>
+
+            <!-- Alocação Rápida -->
+            <div class="quick-allocations">
+              <div class="alloc-item">
+                <span class="alloc-dot dot-rf"></span>
+                <span>Renda Fixa (45%)</span>
+              </div>
+              <div class="alloc-item">
+                <span class="alloc-dot dot-rv"></span>
+                <span>Ações &amp; FIIs (35%)</span>
+              </div>
+              <div class="alloc-item">
+                <span class="alloc-dot dot-intl"></span>
+                <span>Global (20%)</span>
+              </div>
+            </div>
+
+            <div class="security-guarantee-line">
+              <i class="fa-solid fa-circle-check text-gold"></i>
+              <span>Ativos custodiados diretamente em seu nome e CPF</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SELOS REGULATÓRIOS E COMPLIANCE BAR
+         ========================================================================= -->
+    <section class="compliance-bar" aria-label="Instituições reguladoras e selos de conformidade">
+      <div class="container compliance-container">
+        <div class="compliance-title">
+          <span>Instituição Autorizada &amp; Regulada:</span>
+        </div>
+        <div class="compliance-badges">
+          
+          <!-- CVM -->
+          <div class="badge-item" title="Comissão de Valores Mobiliários">
+            <div class="badge-icon-box">
+              <i class="fa-solid fa-landmark"></i>
+            </div>
+            <div class="badge-info">
+              <strong>CVM</strong>
+              <span>Aut. nº 4.892/12</span>
+            </div>
+          </div>
+
+          <!-- BACEN -->
+          <div class="badge-item" title="Banco Central do Brasil">
+            <div class="badge-icon-box">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div class="badge-info">
+              <strong>BACEN</strong>
+              <span>Instituição Homologada</span>
+            </div>
+          </div>
+
+          <!-- ANBIMA -->
+          <div class="badge-item" title="Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais">
+            <div class="badge-icon-box">
+              <i class="fa-solid fa-certificate"></i>
+            </div>
+            <div class="badge-info">
+              <strong>ANBIMA</strong>
+              <span>Código de Melhores Práticas</span>
+            </div>
+          </div>
+
+          <!-- B3 -->
+          <div class="badge-item" title="B3 - Brasil, Bolsa, Balcão">
+            <div class="badge-icon-box">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="badge-info">
+              <strong>B3 PARTICIPANTE</strong>
+              <span>Conexão Direta ao Mercado</span>
+            </div>
+          </div>
+
+          <!-- FGC -->
+          <div class="badge-item" title="Fundo Garantidor de Créditos">
+            <div class="badge-icon-box highlight">
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <div class="badge-info">
+              <strong>GARANTIA FGC</strong>
+              <span>Até R$ 250 mil por CPF</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SOBRE NÓS & LIDERANÇA INSTITUCIONAL
+         ========================================================================= -->
+    <section class="section-padding about-section" id="sobre">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">1. Estrutura Institucional &amp; Governança</span>
+          <h2 class="section-title">Solidez, Governança e Transparência Radical</h2>
+          <p class="section-subtitle">
+            Fundada com o propósito de transformar a relação do investidor brasileiro com o seu patrimônio, operamos em modelo de arquitetura aberta e total ausência de conflitos de interesse.
+          </p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-text-col">
+            <h3 class="subsection-title">Nossa Filosofia de Investimento</h3>
+            <p>
+              Na Prime Wealth, acreditamos que resultados consistentes no longo prazo não decorrem de apostas especulativas, mas sim de uma <strong>estratégia robusta de alocação de ativos (Asset Allocation)</strong>, diversificação inteligente e rigoroso controle de risco.
+            </p>
+            <p>
+              Diferente dos bancos tradicionais que oferecem produtos com altas taxas para bater metas internas, nossos assessores e gestores são remunerados pelo sucesso e pela preservação do seu capital.
+            </p>
+
+            <ul class="about-feature-list">
+              <li>
+                <div class="feature-icon"><i class="fa-solid fa-check-double"></i></div>
+                <div>
+                  <strong>Arquitetura 100% Aberta:</strong>
+                  <span>Acesso aos melhores produtos de mais de 70 gestoras independentes e bancos emissores.</span>
+                </div>
+              </li>
+              <li>
+                <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div>
+                  <strong>Fiduciary Duty (Dever Fiduciário):</strong>
+                  <span>Compromisso legal e ético de colocar os interesses do cliente sempre em primeiro lugar.</span>
+                </div>
+              </li>
+              <li>
+                <div class="feature-icon"><i class="fa-solid fa-fingerprint"></i></div>
+                <div>
+                  <strong>Custódia Segregada:</strong>
+                  <span>Seus recursos e títulos ficam registrados no seu próprio CPF na B3 ou no SELIC, jamais no balanço da assessoria.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Liderança e Sócios -->
+          <div class="leadership-col">
+            <h3 class="subsection-title">Liderança Executiva &amp; Comitê de Investimentos</h3>
+            
+            <div class="leaders-cards-list">
+              <!-- Líder 1 -->
+              <div class="leader-card">
+                <div class="leader-avatar">
+                  <div class="leader-initials">ES</div>
+                </div>
+                <div class="leader-body">
+                  <div class="leader-role-header">
+                    <h4>Eduardo Silveira, CFA</h4>
+                    <span class="leader-title">Sócio-Fundador &amp; CEO</span>
+                  </div>
+                  <p class="leader-bio">
+                    Mais de 22 anos de atuação no mercado financeiro global. Ex-diretor de tesouraria do Itaú BBA e mestre em Finanças Quantitativas pela Columbia University.
+                  </p>
+                  <div class="leader-badges">
+                    <span class="cert-badge">CFA Charterholder</span>
+                    <span class="cert-badge">Certificado ANBIMA CGA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Líder 2 -->
+              <div class="leader-card">
+                <div class="leader-avatar">
+                  <div class="leader-initials">MR</div>
+                </div>
+                <div class="leader-body">
+                  <div class="leader-role-header">
+                    <h4>Mariana Rezende, CFP®</h4>
+                    <span class="leader-title">Sócia &amp; Head de Wealth Management</span>
+                  </div>
+                  <p class="leader-bio">
+                    Especialista em planejamento sucessório e gestão de grandes fortunas. Membro do comitê de ética da Planejar com mais de 16 anos gerindo portfólios familiares.
+                  </p>
+                  <div class="leader-badges">
+                    <span class="cert-badge">CFP® Internacional</span>
+                    <span class="cert-badge">Especialista FGV</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Líder 3 -->
+              <div class="leader-card">
+                <div class="leader-avatar">
+                  <div class="leader-initials">AL</div>
+                </div>
+                <div class="leader-body">
+                  <div class="leader-role-header">
+                    <h4>Dr. André Lourenço, CNPI</h4>
+                    <span class="leader-title">Economista-Chefe &amp; Diretor de Research</span>
+                  </div>
+                  <p class="leader-bio">
+                    Doutor em Teoria Econômica pela USP. Com passagens pelo Banco Central e BTG Pactual, lidera o comitê macroeconômico e as projeções de taxas de juros.
+                  </p>
+                  <div class="leader-badges">
+                    <span class="cert-badge">CNPI Pleno</span>
+                    <span class="cert-badge">Ph.D. USP</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         2. VITRINE DE PRODUTOS E SERVIÇOS
+         ========================================================================= -->
+    <section class="section-padding products-section" id="produtos">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">2. Vitrine de Investimentos</span>
+          <h2 class="section-title">Catálogo Completo de Investimentos</h2>
+          <p class="section-subtitle">
+            Diversifique com as melhores alternativas do mercado financeiro, classificadas por nível de risco, horizonte temporal e expectativas de rentabilidade.
+          </p>
+        </div>
+
+        <!-- Categorias / Tabs -->
+        <div class="products-tabs" role="tablist">
+          <button class="tab-btn active" data-category="renda-fixa" role="tab" aria-selected="true">
+            <i class="fa-solid fa-vault"></i> Renda Fixa
+          </button>
+          <button class="tab-btn" data-category="renda-variavel" role="tab" aria-selected="false">
+            <i class="fa-solid fa-chart-column"></i> Renda Variável &amp; FIIs
+          </button>
+          <button class="tab-btn" data-category="fundos" role="tab" aria-selected="false">
+            <i class="fa-solid fa-layer-group"></i> Fundos de Investimento
+          </button>
+          <button class="tab-btn" data-category="previdencia" role="tab" aria-selected="false">
+            <i class="fa-solid fa-umbrella"></i> Previdência Privada
+          </button>
+          <button class="tab-btn" data-category="internacional" role="tab" aria-selected="false">
+            <i class="fa-solid fa-globe"></i> Global &amp; Offshore
+          </button>
+        </div>
+
+        <!-- Filtros Rápidos -->
+        <div class="catalog-filter-bar">
+          <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="productSearchInput" placeholder="Buscar por emissor, ativo ou indexador (ex: CDB, IPCA, Itaú, Tesouro)...">
+          </div>
+          <div class="filter-controls">
+            <label for="filterRiskSelect">Risco:</label>
+            <select id="filterRiskSelect" class="form-select">
+              <option value="all">Todos os Riscos</option>
+              <option value="1">Muito Baixo (1/5)</option>
+              <option value="2">Baixo (2/5)</option>
+              <option value="3">Moderado (3/5)</option>
+              <option value="4">Arrojado (4/5)</option>
+              <option value="5">Agressivo (5/5)</option>
+            </select>
+
+            <label for="filterLiquiditySelect">Liquidez:</label>
+            <select id="filterLiquiditySelect" class="form-select">
+              <option value="all">Todas as Liquidezes</option>
+              <option value="D+0">D+0 (Imediata)</option>
+              <option value="D+1">D+1 (Diária)</option>
+              <option value="D+30">D+30</option>
+              <option value="Vencimento">No Vencimento</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grid de Cards de Produtos Comparativos -->
+        <div class="products-grid" id="productsGrid">
+          <!-- Gerado dinamicamente via JS com dados ricos e transparentes -->
+        </div>
+
+        <div class="catalog-footer-note">
+          <p><i class="fa-solid fa-circle-info"></i> Rentabilidade passada não é garantia de resultados futuros. Títulos de Renda Fixa de emissores bancários contam com garantia ordinária do FGC até R$ 250.000 por CPF/instituição financeira.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TRANSPARÊNCIA DE CUSTOS & TAXAS
+         ========================================================================= -->
+    <section class="section-padding costs-section" id="custos">
+      <div class="container">
+        
+        <div class="costs-box">
+          <div class="costs-header text-center">
+            <span class="section-tag">Transparência de Custos (Taxa Zero)</span>
+            <h2 class="section-title text-white">Transparência Absoluta: Sem Letras Miúdas</h2>
+            <p class="costs-intro">
+              Cobranças ocultas corroem a rentabilidade do seu patrimônio. Na Prime Wealth, você tem clareza total de quanto custa cada operação antes de investir.
+            </p>
+          </div>
+
+          <div class="costs-grid">
+            
+            <div class="cost-card highlight-card">
+              <div class="cost-badge">Custo Zero</div>
+              <h3 class="cost-card-title">Renda Fixa &amp; Tesouro</h3>
+              <div class="cost-rate">R$ 0<small>/mês</small></div>
+              <ul class="cost-items-list">
+                <li><i class="fa-solid fa-check text-gold"></i> Taxa de custódia zero</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Tesouro Direto com taxa de corretagem zero</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Sem taxa de administração para CDB, LCI e LCA</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Abertura e manutenção de conta 100% grátis</li>
+              </ul>
+              <button class="btn btn-gold btn-block" onclick="openModal('modalOpenAccount')">Investir com Taxa Zero</button>
+            </div>
+
+            <div class="cost-card">
+              <div class="cost-badge">Super Competitivo</div>
+              <h3 class="cost-card-title">Renda Variável &amp; FIIs</h3>
+              <div class="cost-rate">R$ 0<small> para FIIs</small></div>
+              <ul class="cost-items-list">
+                <li><i class="fa-solid fa-check text-gold"></i> Corretagem ZERO em todos os Fundos Imobiliários</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Ações: Pacote R$ 2,90 por ordem via mesa ou R$ 0 no RLP</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Plataformas profissionais (Profit) com isenção por volume</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Envio automático de notas e informes para o IRPF</li>
+              </ul>
+              <button class="btn btn-outline-light btn-block" onclick="openModal('modalOpenAccount')">Ver Tabela Completa</button>
+            </div>
+
+            <div class="cost-card">
+              <div class="cost-badge">Alinhamento Total</div>
+              <h3 class="cost-card-title">Fundos &amp; Previdência</h3>
+              <div class="cost-rate">0%<small> carregamento</small></div>
+              <ul class="cost-items-list">
+                <li><i class="fa-solid fa-check text-gold"></i> Taxa de carregamento ZERO na entrada e na saída</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Taxas de gestão estritamente descritas nos prospectos</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Portabilidade de previdência 100% gratuita</li>
+                <li><i class="fa-solid fa-check text-gold"></i> Devolução parcial (Cashback) de taxas para clientes Select</li>
+              </ul>
+              <button class="btn btn-outline-light btn-block" onclick="openModal('modalOpenAccount')">Fazer Portabilidade</button>
+            </div>
+
+          </div>
+
+          <div class="regulatory-disclosure">
+            <p>
+              Em conformidade com a <strong>Resolução CVM nº 179</strong>, garantimos transparência plena na remuneração de distribuidores, disponibilizando a qualquer momento o extrato detalhado de remuneração recebida pela instituição pela distribuição de cada ativo.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         3. FERRAMENTAS INTERATIVAS: SIMULADOR DE JUROS COMPOSTOS
+         ========================================================================= -->
+    <section class="section-padding simulator-section" id="simulador">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">3. Simulador de Rentabilidade Interativo</span>
+          <h2 class="section-title">Simulador de Rentabilidade Interativo</h2>
+          <p class="section-subtitle">
+            Veja o poder dos juros compostos trabalhando para você ao longo dos anos comparando a Poupança, o CDI e a Carteira Prime Wealth.
+          </p>
+        </div>
+
+        <div class="simulator-wrapper">
+          
+          <!-- Painel de Controles e Sliders -->
+          <div class="sim-controls-panel">
+            <h3 class="panel-heading"><i class="fa-solid fa-sliders"></i> Parâmetros da Simulação</h3>
+            
+            <!-- Aporte Inicial -->
+            <div class="sim-group">
+              <div class="sim-label-row">
+                <label for="initialDeposit">Aplicação Inicial</label>
+                <div class="currency-display" id="initialDepositDisplay">R$ 10.000</div>
+              </div>
+              <input type="range" id="initialDeposit" min="500" max="500000" step="500" value="10000" class="sim-range">
+              <div class="range-marks">
+                <span>R$ 500</span>
+                <span>R$ 250k</span>
+                <span>R$ 500k</span>
+              </div>
+            </div>
+
+            <!-- Aporte Mensal -->
+            <div class="sim-group">
+              <div class="sim-label-row">
+                <label for="monthlyDeposit">Aporte Mensal Recorrente</label>
+                <div class="currency-display" id="monthlyDepositDisplay">R$ 1.500</div>
+              </div>
+              <input type="range" id="monthlyDeposit" min="0" max="30000" step="100" value="1500" class="sim-range">
+              <div class="range-marks">
+                <span>R$ 0</span>
+                <span>R$ 15k</span>
+                <span>R$ 30k</span>
+              </div>
+            </div>
+
+            <!-- Prazo em Anos -->
+            <div class="sim-group">
+              <div class="sim-label-row">
+                <label for="investmentYears">Prazo do Investimento</label>
+                <div class="currency-display highlight" id="investmentYearsDisplay">10 anos (120 meses)</div>
+              </div>
+              <input type="range" id="investmentYears" min="1" max="30" step="1" value="10" class="sim-range">
+              <div class="range-marks">
+                <span>1 ano</span>
+                <span>15 anos</span>
+                <span>30 anos</span>
+              </div>
+            </div>
+
+            <!-- Perfil da Estratégia -->
+            <div class="sim-group">
+              <label for="simBenchmarkSelect">Benchmark Comparativo</label>
+              <select id="simBenchmarkSelect" class="form-select sim-select">
+                <option value="conservative">Conservador Otimizado (110% do CDI - ~11,4% a.a.)</option>
+                <option value="moderate" selected>Moderado Multiativo (128% do CDI - ~13,3% a.a.)</option>
+                <option value="bold">Arrojado Alpha Global (145% do CDI - ~15,0% a.a.)</option>
+              </select>
+            </div>
+
+            <div class="sim-actions">
+              <button class="btn btn-gold btn-block" onclick="openModal('modalOpenAccount')">
+                <i class="fa-solid fa-rocket"></i> Quero Essa Rentabilidade
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Painel de Resultados & Gráfico -->
+          <div class="sim-results-panel">
+            
+            <div class="sim-cards-summary">
+              <div class="sim-kpi-card">
+                <span class="kpi-label">Total Investido (Seu Bolso)</span>
+                <span class="kpi-value" id="kpiTotalInvested">R$ 190.000</span>
+              </div>
+
+              <div class="sim-kpi-card highlight-gold-bg">
+                <span class="kpi-label">Montante na Carteira Prime Wealth</span>
+                <span class="kpi-value gold-text" id="kpiAccumulatedVertice">R$ 412.350</span>
+                <span class="kpi-sub" id="kpiInterestGained">+ R$ 222.350 em juros</span>
+              </div>
+
+              <div class="sim-kpi-card">
+                <span class="kpi-label">Se Ficasse na Poupança</span>
+                <span class="kpi-value muted" id="kpiAccumulatedPoupanca">R$ 274.120</span>
+                <span class="kpi-difference" id="kpiDifference">Você ganha R$ 138.230 a mais</span>
+              </div>
+            </div>
+
+            <!-- Gráfico Dinâmico de Curva de Acumulação -->
+            <div class="sim-chart-wrapper">
+              <canvas id="simulatorChart" height="230"></canvas>
+            </div>
+
+            <div class="sim-disclaimer">
+              <small>*Simulação para fins educativos baseada em premissas de taxa SELIC/CDI constante em 10,40% a.a. e Poupança a 6,17% a.a. + TR. Tributação de IR regressivo considerada.</small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         3.2 FERRAMENTAS INTERATIVAS: TESTE DE PERFIL DE INVESTIDOR (SUITABILITY)
+         ========================================================================= -->
+    <section class="section-padding suitability-section" id="suitability">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">4. Teste de Perfil (Suitability ANBIMA)</span>
+          <h2 class="section-title">Descubra seu Perfil de Investidor (Suitability)</h2>
+          <p class="section-subtitle">
+            Respondendo a 4 perguntas regulamentadas pela ANBIMA e CVM, determinamos sua tolerância a risco e sugerimos a alocação de carteira ideal para os seus objetivos.
+          </p>
+        </div>
+
+        <div class="suitability-box" id="suitabilityBox">
+          
+          <!-- Barra de Progresso do Teste -->
+          <div class="quiz-progress-bar">
+            <div class="quiz-step-indicator" id="quizStepIndicator">Pergunta 1 de 4</div>
+            <div class="progress-track">
+              <div class="progress-fill" id="quizProgressFill" style="width: 25%;"></div>
+            </div>
+          </div>
+
+          <!-- Container Dinâmico de Perguntas -->
+          <div class="quiz-body" id="quizBody">
+            <!-- Renderizado via suitability.js -->
+          </div>
+
+          <!-- Container do Resultado (escondido inicialmente) -->
+          <div class="quiz-result hidden" id="quizResult">
+            <div class="result-header">
+              <div class="result-badge-icon" id="resultIcon">
+                <i class="fa-solid fa-compass"></i>
+              </div>
+              <span class="result-tag-label">Seu perfil identificado é:</span>
+              <h3 class="result-profile-name" id="resultProfileName">Moderado</h3>
+              <p class="result-profile-desc" id="resultProfileDesc">
+                Você busca equilíbrio entre segurança de capital e rentabilidades superiores à renda fixa tradicional, aceitando oscilações moderadas de curto prazo em busca de ganhos reais no médio e longo prazo.
+              </p>
+            </div>
+
+            <div class="result-columns">
+              <!-- Gráfico de Alocação Recomendada -->
+              <div class="result-chart-col">
+                <h4>Alocação de Ativos Recomendada:</h4>
+                <div class="chart-donut-wrapper">
+                  <canvas id="suitabilityChart" height="210"></canvas>
+                </div>
+              </div>
+
+              <!-- Lista de Produtos Recomendados -->
+              <div class="result-products-col">
+                <h4>Carteira Sugerida para Você:</h4>
+                <div class="recommended-items-list" id="recommendedProductsList">
+                  <!-- Gerado via JS -->
+                </div>
+
+                <div class="result-cta-actions">
+                  <button class="btn btn-gold btn-block" onclick="openModal('modalOpenAccount')">
+                    <i class="fa-solid fa-lock-open"></i> Abrir Conta e Montar Esta Carteira
+                  </button>
+                  <button class="btn btn-outline-dark btn-sm btn-block" id="btnRestartQuiz">
+                    <i class="fa-solid fa-rotate-left"></i> Refazer o Questionário
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         3.3 RESEARCH, CENTRAL DE CONTEÚDO & GLOSSÁRIO FINANCEIRO
+         ========================================================================= -->
+    <section class="section-padding research-section" id="research">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">5. Central de Conteúdo &amp; Research</span>
+          <h2 class="section-title">Research &amp; Análises dos Nossos Especialistas</h2>
+          <p class="section-subtitle">
+            Relatórios macroeconômicos diários, recomendações de carteira e glossário para você investir com conhecimento e autonomia.
+          </p>
+        </div>
+
+        <!-- Grade de Relatórios e Artigos -->
+        <div class="research-grid">
+          
+          <article class="research-card">
+            <div class="card-thumb macro-thumb">
+              <span class="report-badge">Morning Call Diário</span>
+              <span class="read-time"><i class="fa-regular fa-clock"></i> 4 min de leitura</span>
+            </div>
+            <div class="card-content">
+              <span class="post-date"><i class="fa-regular fa-calendar"></i> Hoje, 08:30 • Por Dr. André Lourenço</span>
+              <h3 class="post-title">Cenário Macro: Decisão de Juros do Copom e seus Impactos nos Títulos IPCA+</h3>
+              <p class="post-excerpt">
+                Análise da ata do Banco Central e as melhores oportunidades abertas na curva longa de juros reais para travar taxas de inflação + 6,5% a.a.
+              </p>
+              <a href="javascript:void(0)" class="read-more-link" onclick="openReportModal('copom')">
+                Ler Relatório Completo <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+
+          <article class="research-card">
+            <div class="card-thumb fii-thumb">
+              <span class="report-badge highlight">Carteira Recomendada</span>
+              <span class="read-time"><i class="fa-regular fa-clock"></i> 7 min de leitura</span>
+            </div>
+            <div class="card-content">
+              <span class="post-date"><i class="fa-regular fa-calendar"></i> Atualização Mensal • Equipe de Real Estate</span>
+              <h3 class="post-title">Top 8 Fundos Imobiliários (FIIs) para Receber Renda Mensal Isenta de IR</h3>
+              <p class="post-excerpt">
+                Seleção dos melhores fundos de tijolo (galpões logísticos e lajes corporativas premium) com Dividend Yield médio projetado de 11,2% ao ano.
+              </p>
+              <a href="javascript:void(0)" class="read-more-link" onclick="openReportModal('fiis')">
+                Acessar Carteira <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+
+          <article class="research-card">
+            <div class="card-thumb global-thumb">
+              <span class="report-badge">Global Markets</span>
+              <span class="read-time"><i class="fa-regular fa-clock"></i> 5 min de leitura</span>
+            </div>
+            <div class="card-content">
+              <span class="post-date"><i class="fa-regular fa-calendar"></i> Semana Atual • Mesa Internacional</span>
+              <h3 class="post-title">Inteligência Artificial e S&amp;P 500: Como Internacionalizar o Patrimônio com Segurança</h3>
+              <p class="post-excerpt">
+                Estratégias para proteger seu capital contra a desvalorização cambial investindo nas maiores empresas globais através de BDRs ou conta offshore.
+              </p>
+              <a href="javascript:void(0)" class="read-more-link" onclick="openReportModal('global')">
+                Ler Análise Internacional <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Glossário Financeiro Interativo -->
+        <div class="glossary-wrapper">
+          <div class="glossary-header">
+            <div>
+              <span class="section-tag">Educação Financeira</span>
+              <h3 class="glossary-title">Glossário do Investidor</h3>
+              <p class="glossary-sub">Pesquise conceitos-chave do mercado sem complicação.</p>
+            </div>
+            <div class="glossary-search">
+              <i class="fa-solid fa-search"></i>
+              <input type="text" id="glossarySearchInput" placeholder="Ex: CDI, FGC, Marcação a Mercado, Selic...">
+            </div>
+          </div>
+
+          <div class="glossary-grid" id="glossaryGrid">
+            <!-- Gerado via app.js -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         4. ÁREA DO CLIENTE DEMO AO VIVO (DASHBOARD CONSOLIDADO & EXTRATOS)
+         ========================================================================= -->
+    <section class="section-padding client-demo-section" id="area-cliente">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">6. Área do Cliente &amp; Extratos (Demonstração)</span>
+          <h2 class="section-title">Sua Vida Financeira Consolidada em um Só Lugar</h2>
+          <p class="section-subtitle">
+            Experimente abaixo a interface da Área do Cliente Prime Wealth: gráficos de rentabilidade em tempo real, evolução patrimonial, notas de corretagem e informe de rendimentos simplificado.
+          </p>
+        </div>
+
+        <!-- Card de Estado Deslogado (Visão Padrão Inicial) -->
+        <div class="client-locked-card" id="clientLockedCard">
+          <div class="locked-icon-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <span class="locked-badge-pill"><i class="fa-solid fa-lock"></i> Acesso Restrito ao Investidor</span>
+          <h3 class="locked-title">Área Exclusiva da Plataforma</h3>
+          <p class="locked-subtitle">
+            Faça login com seu CPF ou e-mail para desbloquear a visualização consolidada do seu patrimônio, gráficos de rentabilidade em tempo real, notas de corretagem e informe de rendimentos.
+          </p>
+
+          <div class="locked-actions">
+            <button class="btn btn-gold btn-lg" onclick="openModal('modalLogin')">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              <span>Fazer Login na Conta</span>
+            </button>
+            <button class="btn btn-outline-dark btn-lg" onclick="openModal('modalOpenAccount')">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>Abrir Conta Gratuita</span>
+            </button>
+          </div>
+
+          <div class="locked-features-strip">
+            <div class="locked-feat-item">
+              <i class="fa-solid fa-circle-check text-gold"></i>
+              <span>Ambiente criptografado e seguro</span>
+            </div>
+            <div class="locked-feat-item">
+              <i class="fa-solid fa-chart-pie text-gold"></i>
+              <span>Alocação por classes de ativos</span>
+            </div>
+            <div class="locked-feat-item">
+              <i class="fa-solid fa-file-invoice text-gold"></i>
+              <span>Informe de rendimentos para IRPF</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Interativo Completo (Oculto até que o login seja realizado) -->
+        <div class="client-portal-card hidden-dashboard" id="clientPortalCard">
+          
+          <!-- Barra Superior do Dashboard Logado -->
+          <div class="portal-top-bar">
+            <div class="user-profile-widget">
+              <div class="user-avatar-badge" id="portalUserAvatar">
+                <span>IP</span>
+              </div>
+              <div class="user-meta">
+                <span class="user-greeting" id="portalUserGreeting">Olá, <strong>Investidor</strong></span>
+                <span class="user-account-num" id="portalUserMeta">Conta Prime Wealth • Acesso Ativo</span>
+              </div>
+            </div>
+
+            <div class="portal-quick-actions">
+              <button class="btn btn-outline-light btn-sm" onclick="showDashboardToast('Comprovante gerado com sucesso!')">
+                <i class="fa-solid fa-arrow-down-to-bracket"></i> Extrato PDF
+              </button>
+              <button class="btn btn-gold btn-sm" onclick="showDashboardToast('Simulação de Aporte: Transferência via Pix aprovada!')">
+                <i class="fa-solid fa-plus"></i> Novo Aporte Pix
+              </button>
+              <button class="btn btn-danger-soft btn-sm" onclick="handleLogout()" title="Sair da Conta">
+                <i class="fa-solid fa-power-off"></i> Sair
+              </button>
+            </div>
+          </div>
+
+          <!-- Métricas Principais -->
+          <div class="portal-metrics-grid">
+            <div class="metric-box">
+              <span class="metric-label">Patrimônio Líquido Total</span>
+              <div class="metric-value-row">
+                <span class="metric-large-val" id="portalTotalNet">R$ 342.850,20</span>
+                <button class="btn-eye" id="toggleBalanceVisibility" title="Ocultar/Exibir Valores">
+                  <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                </button>
+              </div>
+              <span class="metric-trend pos">
+                <i class="fa-solid fa-arrow-up"></i> +R$ 4.312,80 este mês (+1,28%)
+              </span>
+            </div>
+
+            <div class="metric-box">
+              <span class="metric-label">Rentabilidade da Carteira (12M)</span>
+              <span class="metric-large-val text-gold" id="portalRentability">16,84% a.a.</span>
+              <span class="metric-benchmark">Comparado ao CDI: <strong>162% do CDI</strong></span>
+            </div>
+
+            <div class="metric-box">
+              <span class="metric-label">Proventos Recebidos (Últimos 12M)</span>
+              <span class="metric-large-val text-success" id="portalDividends">R$ 18.420,00</span>
+              <span class="metric-benchmark">Média mensal isenta: <strong>R$ 1.535/mês</strong></span>
+            </div>
+
+            <div class="metric-box">
+              <span class="metric-label">Saldo Disponível em Conta</span>
+              <span class="metric-large-val" id="portalCash">R$ 5.420,00</span>
+              <span class="metric-benchmark">Rendendo 100% CDI com liquidez imediata</span>
+            </div>
+          </div>
+
+          <!-- Visualização em Abas da Área do Cliente -->
+          <div class="portal-tabs-nav">
+            <button class="portal-tab-btn active" data-portal-tab="visao-geral">
+              <i class="fa-solid fa-chart-pie"></i> Visão Geral &amp; Alocação
+            </button>
+            <button class="portal-tab-btn" data-portal-tab="rentabilidade">
+              <i class="fa-solid fa-chart-line"></i> Rentabilidade vs Índices
+            </button>
+            <button class="portal-tab-btn" data-portal-tab="extrato">
+              <i class="fa-solid fa-receipt"></i> Extrato de Movimentações
+            </button>
+            <button class="portal-tab-btn" data-portal-tab="informe-ir">
+              <i class="fa-solid fa-file-invoice-dollar"></i> Informe de Rendimentos (IRPF)
+            </button>
+          </div>
+
+          <!-- Conteúdo das Abas -->
+          <div class="portal-tab-content">
+            
+            <!-- Tab 1: Visão Geral -->
+            <div class="portal-pane active" id="pane-visao-geral">
+              <div class="portal-allocation-layout">
+                <div class="portal-chart-side">
+                  <h4>Distribuição Atual por Classe de Ativos</h4>
+                  <div class="portal-donut-container">
+                    <canvas id="portalDonutChart" height="230"></canvas>
+                  </div>
+                </div>
+
+                <div class="portal-table-side">
+                  <h4>Posição Detalhada por Ativo</h4>
+                  <div class="table-responsive">
+                    <table class="portal-table">
+                      <thead>
+                        <tr>
+                          <th>Ativo / Produto</th>
+                          <th>Classe</th>
+                          <th>Valor Aplicado</th>
+                          <th>Rentabilidade</th>
+                          <th>% Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>Tesouro IPCA+ 2035</strong></td>
+                          <td><span class="badge-cls rf">Renda Fixa</span></td>
+                          <td>R$ 120.000,00</td>
+                          <td class="text-success">+14,8%</td>
+                          <td>35,0%</td>
+                        </tr>
+                        <tr>
+                          <td><strong>CDB Banco Master 128% CDI</strong></td>
+                          <td><span class="badge-cls rf">Renda Fixa</span></td>
+                          <td>R$ 85.000,00</td>
+                          <td class="text-success">+13,2%</td>
+                          <td>24,8%</td>
+                        </tr>
+                        <tr>
+                          <td><strong>HGLG11 (Galpões Logísticos)</strong></td>
+                          <td><span class="badge-cls fii">FII</span></td>
+                          <td>R$ 48.000,00</td>
+                          <td class="text-success">+11,4%</td>
+                          <td>14,0%</td>
+                        </tr>
+                        <tr>
+                          <td><strong>XPML11 (Shopping Centers)</strong></td>
+                          <td><span class="badge-cls fii">FII</span></td>
+                          <td>R$ 38.000,00</td>
+                          <td class="text-success">+9,8%</td>
+                          <td>11,1%</td>
+                        </tr>
+                        <tr>
+                          <td><strong>IVVB11 (S&amp;P 500 Dolarizado)</strong></td>
+                          <td><span class="badge-cls intl">Global</span></td>
+                          <td>R$ 46.430,20</td>
+                          <td class="text-success">+24,1%</td>
+                          <td>13,5%</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Conta Corrente Remunerada</strong></td>
+                          <td><span class="badge-cls cash">Caixa</span></td>
+                          <td>R$ 5.420,00</td>
+                          <td class="text-success">+10,4%</td>
+                          <td>1,6%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Rentabilidade Comparada -->
+            <div class="portal-pane" id="pane-rentabilidade">
+              <div class="portal-rent-chart-box">
+                <div class="chart-header-flex">
+                  <div>
+                    <h4>Evolução Acumulada da Carteira vs Índices</h4>
+                    <p class="chart-desc">Sua carteira supera consistentemente o CDI e o Ibovespa nos últimos 24 meses.</p>
+                  </div>
+                  <div class="legend-tags">
+                    <span class="legend-tag tag-wallet"><i class="fa-solid fa-circle"></i> Sua Carteira (+34,2%)</span>
+                    <span class="legend-tag tag-cdi"><i class="fa-solid fa-circle"></i> 100% CDI (+22,8%)</span>
+                    <span class="legend-tag tag-ibov"><i class="fa-solid fa-circle"></i> IBOVESPA (+15,4%)</span>
+                  </div>
+                </div>
+                <div class="chart-line-wrapper">
+                  <canvas id="portalLineChart" height="250"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Extrato de Movimentações -->
+            <div class="portal-pane" id="pane-extrato">
+              <div class="table-responsive">
+                <table class="portal-table">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Tipo</th>
+                      <th>Descrição do Lançamento</th>
+                      <th>Valor Líquido</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>18/11/2026</td>
+                      <td><span class="badge-tx div"><i class="fa-solid fa-coins"></i> Dividendo</span></td>
+                      <td>Rendimento HGLG11 (R$ 1,10 / cota)</td>
+                      <td class="text-success">+ R$ 420,00</td>
+                      <td><span class="tx-status ok">Liquidado</span></td>
+                    </tr>
+                    <tr>
+                      <td>15/11/2026</td>
+                      <td><span class="badge-tx div"><i class="fa-solid fa-coins"></i> Dividendo</span></td>
+                      <td>Rendimento XPML11 (R$ 0,92 / cota)</td>
+                      <td class="text-success">+ R$ 368,00</td>
+                      <td><span class="tx-status ok">Liquidado</span></td>
+                    </tr>
+                    <tr>
+                      <td>05/11/2026</td>
+                      <td><span class="badge-tx in"><i class="fa-solid fa-arrow-down"></i> Aporte</span></td>
+                      <td>Transferência Pix Recebida - Banco Origem</td>
+                      <td class="text-success">+ R$ 5.000,00</td>
+                      <td><span class="tx-status ok">Confirmado</span></td>
+                    </tr>
+                    <tr>
+                      <td>06/11/2026</td>
+                      <td><span class="badge-tx buy"><i class="fa-solid fa-cart-shopping"></i> Aplicação</span></td>
+                      <td>Compra Tesouro IPCA+ 2035</td>
+                      <td class="text-danger">- R$ 5.000,00</td>
+                      <td><span class="tx-status ok">Custodiado</span></td>
+                    </tr>
+                    <tr>
+                      <td>14/10/2026</td>
+                      <td><span class="badge-tx div"><i class="fa-solid fa-coins"></i> JCP</span></td>
+                      <td>Juros sobre Capital Próprio Itaú S.A.</td>
+                      <td class="text-success">+ R$ 310,50</td>
+                      <td><span class="tx-status ok">Liquidado</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab 4: Informe de Rendimentos IRPF -->
+            <div class="portal-pane" id="pane-informe-ir">
+              <div class="irpf-box">
+                <div class="irpf-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                <div class="irpf-info">
+                  <h4>Declaração de Ajuste Anual do Imposto de Renda (Ano-Calendário 2025/2026)</h4>
+                  <p>
+                    O informe consolidado contém todos os saldos em 31/12, rendimentos isentos (dividendos de FIIs, LCI/LCA) e rendimentos sujeitos à tributação exclusiva (CDB, Fundos e Tesouro).
+                  </p>
+                </div>
+                <div class="irpf-actions">
+                  <button class="btn btn-gold" onclick="simulateDownloadIR()">
+                    <i class="fa-solid fa-download"></i> Baixar Informe em PDF
+                  </button>
+                  <button class="btn btn-outline-light" onclick="simulateDownloadIR()">
+                    <i class="fa-solid fa-file-csv"></i> Exportar Dados (.CSV)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         ATENDIMENTO MULTICANAL, FAQ & OUVIDORIA
+         ========================================================================= -->
+    <section class="section-padding support-section" id="suporte">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">7. Atendimento Multicanal &amp; FAQ</span>
+          <h2 class="section-title">Atendimento Humanizado e Multicanal</h2>
+          <p class="section-subtitle">
+            Tire suas dúvidas imediatamente ou converse com a nossa equipe de suporte e assessores certificados.
+          </p>
+        </div>
+
+        <div class="support-channels-grid">
+          
+          <div class="channel-card">
+            <div class="channel-icon-box whatsapp-box">
+              <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <h3 class="channel-title">WhatsApp Oficial</h3>
+            <p class="channel-desc">Tire dúvidas rápidas, receba alertas de proventos e fale com a mesa de operações.</p>
+            <span class="channel-time"><i class="fa-regular fa-clock"></i> Seg a Sex, das 08h às 19h</span>
+            <button class="btn btn-whatsapp btn-block" onclick="openWhatsAppModal()">
+              Iniciar Conversa WhatsApp
+            </button>
+          </div>
+
+          <div class="channel-card">
+            <div class="channel-icon-box advisor-box">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <h3 class="channel-title">Assessor Dedicado</h3>
+            <p class="channel-desc">Agende uma reunião presencial ou por vídeo para análise individual do seu patrimônio.</p>
+            <span class="channel-time"><i class="fa-solid fa-shield"></i> Profissionais certificados CFP® / ANBIMA</span>
+            <button class="btn btn-gold btn-block" onclick="openAdvisorModal()">
+              Agendar Reunião Gratuita
+            </button>
+          </div>
+
+          <div class="channel-card">
+            <div class="channel-icon-box phone-box">
+              <i class="fa-solid fa-headset"></i>
+            </div>
+            <h3 class="channel-title">Ouvidoria &amp; 0800</h3>
+            <p class="channel-desc">Canal institucional de segunda instância para suporte e resolução de manifestações.</p>
+            <span class="channel-time"><strong>0800 782 9000</strong> (Ligação gratuita)</span>
+            <button class="btn btn-outline-dark btn-block" onclick="openOuvidoriaModal()">
+              Acessar Ouvidoria
+            </button>
+          </div>
+
+        </div>
+
+        <!-- FAQ em Acordeão Estruturado -->
+        <div class="faq-accordion-box">
+          <h3 class="faq-heading text-center">Perguntas Frequentes (FAQ)</h3>
+          
+          <div class="faq-list" id="faqList">
+            
+            <div class="faq-item active">
+              <button class="faq-question" aria-expanded="true">
+                <span>Como funciona a segurança do meu dinheiro na Prime Wealth?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  A Prime Wealth Investimentos é uma instituição devidamente autorizada pelo Banco Central do Brasil e regulada pela Comissão de Valores Mobiliários (CVM). Todo o seu capital e os títulos adquiridos ficam registrados em contas de custódia individualizadas e segregadas em seu próprio CPF na B3 ou no SELIC. Além disso, títulos de renda fixa bancária contam com a garantia do Fundo Garantidor de Créditos (FGC) de até R$ 250.000 por CPF e por instituição emissora.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                <span>Há cobrança de taxas para abrir conta ou investir em Renda Fixa?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Não. A abertura, manutenção de conta e custódia de títulos são 100% gratuitas. Para investimentos em Renda Fixa (como Tesouro Direto, CDBs, LCIs, LCAs e Debêntures) e Fundos Imobiliários (FIIs), a taxa de corretagem é ZERO.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                <span>Qual é o valor mínimo para começar a investir?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Você pode começar com valores a partir de R$ 35,00 no Tesouro Direto ou R$ 100,00 em CDBs e Fundos de Investimento. Para atendimento com assessor exclusivo dedicado, o patrimônio mínimo sugerido é de R$ 50.000,00, embora qualquer cliente tenha acesso à nossa equipe de especialistas.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                <span>Como transfiro recursos para a minha conta de investimentos?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  Por regras estritas de segurança do Banco Central e de Prevenção à Lavagem de Dinheiro, a conta só aceita transferências (TED ou Pix) oriundas de contas bancárias da <strong>mesma titularidade</strong> (mesmo CPF). O saldo é creditado em segundos via Pix.
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                <span>O que é o teste de Suitability e por que ele é obrigatório?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="faq-answer">
+                <p>
+                  O teste de Suitability (análise do perfil de investidor) é uma exigência da Resolução CVM nº 30. Ele visa proteger você, garantindo que nenhum produto incompatível com seus objetivos, horizonte temporal e tolerância ao risco seja contratado sem seu expresso consentimento.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       RODAPÉ INSTITUCIONAL & SELOS DE COMPLIANCE
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      
+      <div class="footer-top-grid">
+        <!-- Coluna Institucional -->
+        <div class="footer-col brand-col">
+          <div class="footer-logo">
+            <img src="assets/logo-prime-wealth.jpg" alt="Prime Wealth Logo" class="footer-logo-img">
+            <span class="footer-brand-name">PRIME WEALTH INVESTIMENTOS</span>
+          </div>
+          <p class="footer-desc">
+            Prime Wealth Distribuidora de Títulos e Valores Mobiliários S.A.<br>
+            CNPJ: 14.892.341/0001-92<br>
+            Av. Brigadeiro Faria Lima, 3477 - 14º andar<br>
+            Itaim Bibi, São Paulo - SP, 04538-133
+          </p>
+          <div class="footer-social-links">
+            <a href="javascript:void(0)" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="javascript:void(0)" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="javascript:void(0)" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="javascript:void(0)" aria-label="Spotify Podcast"><i class="fa-brands fa-spotify"></i></a>
+          </div>
+        </div>
+
+        <!-- Links Rápidos -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Produtos</h4>
+          <ul class="footer-links">
+            <li><a href="#produtos">Renda Fixa e Tesouro</a></li>
+            <li><a href="#produtos">Ações e Opções</a></li>
+            <li><a href="#produtos">Fundos Imobiliários (FIIs)</a></li>
+            <li><a href="#produtos">Fundos Multimercado</a></li>
+            <li><a href="#produtos">Previdência Privada</a></li>
+            <li><a href="#produtos">Investimentos nos EUA</a></li>
+          </ul>
+        </div>
+
+        <!-- Links Institucionais -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Institucional</h4>
+          <ul class="footer-links">
+            <li><a href="#sobre">Quem Somos</a></li>
+            <li><a href="#sobre">Equipe e Liderança</a></li>
+            <li><a href="#custos">Tabela de Custos e Taxas</a></li>
+            <li><a href="#research">Relatórios e Research</a></li>
+            <li><a href="#simulador">Simulador Financeiro</a></li>
+            <li><a href="#suitability">Análise de Perfil</a></li>
+          </ul>
+        </div>
+
+        <!-- Compliance & Segurança -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Regulação &amp; Ética</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="openComplianceModal('lgpd')">Privacidade e LGPD</a></li>
+            <li><a href="javascript:void(0)" onclick="openComplianceModal('termos')">Termos de Uso da Plataforma</a></li>
+            <li><a href="javascript:void(0)" onclick="openComplianceModal('etica')">Código de Ética e Conduta</a></li>
+            <li><a href="javascript:void(0)" onclick="openComplianceModal('fgc')">Informações sobre o FGC</a></li>
+            <li><a href="javascript:void(0)" onclick="openComplianceModal('riscos')">Declaração de Riscos de Mercado</a></li>
+            <li><a href="javascript:void(0)" onclick="openOuvidoriaModal()">Canal de Denúncias e Ouvidoria</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Selos Regulatórios Visuais no Rodapé -->
+      <div class="footer-badges-strip">
+        <div class="badge-pill-foot">CVM AUTORIZADA</div>
+        <div class="badge-pill-foot">ANBIMA GESTÃO E ADMINISTRAÇÃO</div>
+        <div class="badge-pill-foot">BANCO CENTRAL DO BRASIL</div>
+        <div class="badge-pill-foot">B3 MERCADO CERTIFICADO</div>
+        <div class="badge-pill-foot">ASSOCIADO AO FGC</div>
+      </div>
+
+      <!-- Disclaimers Legais Obrigatórios CVM / ANBIMA -->
+      <div class="footer-disclaimer-legal">
+        <p>
+          <strong>AVISO LEGAL E DECLARAÇÃO DE RISCO:</strong> A Prime Wealth DTVM S.A. é uma instituição autorizada a funcionar pelo Banco Central do Brasil e credenciada perante a CVM para o exercício das atividades de distribuição de títulos e valores mobiliários. <strong>A RENTABILIDADE PASSADA NÃO REPRESENTA GARANTIA DE RENTABILIDADE FUTURA.</strong> Investimentos em ativos de renda variável envolvem oscilações de mercado e riscos de perda do capital principal investido. Fundos de investimento não contam com garantia do administrador, do gestor, de qualquer mecanismo de seguro ou do Fundo Garantidor de Créditos (FGC). Leia atentamente o formulário de informações complementares, a lâmina de informações essenciais e o regulamento antes de investir. As informações aqui contidas têm caráter puramente informativo e educacional e não constituem recomendação individualizada de compra ou venda de ativos, devendo o investidor verificar a adequação dos produtos ao seu perfil de risco (Suitability).
+        </p>
+        <p class="copyright-line">
+          © 2026 Prime Wealth Investimentos. Todos os direitos reservados. Em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 - LGPD).
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       BOTÃO FLUTUANTE DE WHATSAPP / ATENDIMENTO
+       ========================================================================= -->
+  <div class="floating-contact-btn" id="floatingWhatsAppBtn" onclick="openWhatsAppModal()" title="Falar com Especialista pelo WhatsApp">
+    <div class="whatsapp-ping"></div>
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="floating-tooltip">Fale com um Assessor</span>
+  </div>
+
+  <!-- =========================================================================
+       MODAIS INTERATIVOS (LOGIN, CADASTRO, ASSESSOR, WHATSAPP, OUVIDORIA)
+       ========================================================================= -->
+
+  <!-- Modal 1: Login / Acesso à Plataforma do Cliente -->
+  <div class="modal-backdrop" id="modalLogin" role="dialog" aria-modal="true" aria-labelledby="modalLoginTitle">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modalLogin')" aria-label="Fechar">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-logo-icon"><i class="fa-solid fa-lock"></i></div>
+        <h3 id="modalLoginTitle">Acessar Área do Cliente</h3>
+        <p>Informe seus dados de acesso para visualizar sua carteira e gerenciar investimentos.</p>
+      </div>
+
+      <form class="modal-form" id="formLogin" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label for="loginIdentifier">CPF ou E-mail *</label>
+          <div class="input-with-icon">
+            <i class="fa-regular fa-user input-icon"></i>
+            <input type="text" id="loginIdentifier" class="form-input with-icon" placeholder="Digite seu CPF ou e-mail" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row-flex">
+            <label for="loginPassword">Senha *</label>
+            <a href="javascript:void(0)" class="forgot-pass-link" onclick="handleForgotPassword()">Esqueci minha senha</a>
+          </div>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-key input-icon"></i>
+            <input type="password" id="loginPassword" class="form-input with-icon" placeholder="Digite sua senha de acesso" required>
+            <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility('loginPassword', 'eyeIconLogin')" aria-label="Mostrar ou ocultar senha">
+              <i class="fa-regular fa-eye" id="eyeIconLogin"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row-auth">
+          <div class="checkbox-item">
+            <input type="checkbox" id="loginRememberMe">
+            <label for="loginRememberMe">Lembrar neste navegador</label>
+          </div>
+          <span class="security-chip"><i class="fa-solid fa-shield-halved text-gold"></i> Criptografia 256-bit</span>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-block btn-lg" id="btnLoginSubmit">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar na Minha Conta
+        </button>
+
+        <div class="modal-switch-prompt">
+          <span>Ainda não tem conta na Prime Wealth?</span>
+          <a href="javascript:void(0)" onclick="switchToRegisterModal()">Abra sua conta gratuita</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Abertura de Conta -->
+  <div class="modal-backdrop" id="modalOpenAccount" role="dialog" aria-modal="true" aria-labelledby="modalAccountTitle">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modalOpenAccount')" aria-label="Fechar">&times;</button>
+      <div class="modal-header">
+        <div class="modal-logo-icon"><i class="fa-solid fa-user-plus"></i></div>
+        <h3 id="modalAccountTitle">Abra sua Conta de Investimentos</h3>
+        <p>Preencha os dados abaixo. Conta 100% gratuita, sem taxa de custódia e aprovada em minutos.</p>
+      </div>
+      <form class="modal-form" id="formOpenAccount" onsubmit="handleAccountSubmit(event)">
+        <div class="form-group">
+          <label for="accName">Nome Completo *</label>
+          <input type="text" id="accName" class="form-input" placeholder="Seu nome completo" required>
+        </div>
+        <div class="form-group">
+          <label for="accEmail">E-mail Pessoal *</label>
+          <input type="email" id="accEmail" class="form-input" placeholder="seuemail@exemplo.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="accCPF">CPF *</label>
+            <input type="text" id="accCPF" class="form-input" placeholder="000.000.000-00" required>
+          </div>
+          <div class="form-group">
+            <label for="accPhone">Celular / WhatsApp *</label>
+            <input type="tel" id="accPhone" class="form-input" placeholder="(11) 99999-9999" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="accInitialCapital">Pretensão de Investimento Inicial</label>
+          <select id="accInitialCapital" class="form-select">
+            <option value="5k">Até R$ 10.000</option>
+            <option value="50k" selected>R$ 10.000 a R$ 50.000</option>
+            <option value="200k">R$ 50.000 a R$ 300.000</option>
+            <option value="1m">Acima de R$ 300.000 (Conta Private/Select)</option>
+          </select>
+        </div>
+        <div class="form-check-group">
+          <input type="checkbox" id="accTermsCheck" required>
+          <label for="accTermsCheck">Declaro que li e concordo com a <a href="javascript:void(0)" onclick="openComplianceModal('lgpd')">Política de Privacidade (LGPD)</a> e <a href="javascript:void(0)" onclick="openComplianceModal('termos')">Termos de Adesão</a>.</label>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block btn-lg">
+          <i class="fa-solid fa-check"></i> Concluir Cadastro Gratuito
+        </button>
+
+        <div class="modal-switch-prompt">
+          <span>Já possui uma conta ativa?</span>
+          <a href="javascript:void(0)" onclick="switchToLoginModal()">Fazer login na plataforma</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Falar com Assessor -->
+  <div class="modal-backdrop" id="modalAdvisor" role="dialog" aria-modal="true" aria-labelledby="modalAdvisorTitle">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modalAdvisor')" aria-label="Fechar">&times;</button>
+      <div class="modal-header">
+        <div class="modal-logo-icon"><i class="fa-solid fa-headset"></i></div>
+        <h3 id="modalAdvisorTitle">Agende com um Assessor Credenciado</h3>
+        <p>Receba uma avaliação do seu patrimônio atual sem custos e com total confidencialidade.</p>
+      </div>
+      <form class="modal-form" id="formAdvisor" onsubmit="handleAdvisorSubmit(event)">
+        <div class="form-group">
+          <label for="advName">Seu Nome *</label>
+          <input type="text" id="advName" class="form-input" placeholder="Como prefere ser chamado" required>
+        </div>
+        <div class="form-group">
+          <label for="advPhone">WhatsApp / Telefone *</label>
+          <input type="tel" id="advPhone" class="form-input" placeholder="(11) 98765-4321" required>
+        </div>
+        <div class="form-group">
+          <label for="advPreference">Formato de Contato Preferido</label>
+          <select id="advPreference" class="form-select">
+            <option value="whatsapp">Mensagem via WhatsApp</option>
+            <option value="video">Videoconferência (Google Meet / Zoom)</option>
+            <option value="phone">Ligação Telefônica</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="advNotes">Objetivo Principal ou Dúvida</label>
+          <textarea id="advNotes" class="form-textarea" rows="3" placeholder="Ex: Gostaria de migrar meu patrimônio da poupança para renda fixa ou diversificar em dividendos..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block btn-lg">
+          <i class="fa-regular fa-calendar-check"></i> Confirmar Agendamento
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal WhatsApp Simulado Interativo com Respostas Automáticas -->
+  <div class="modal-backdrop" id="modalWhatsApp" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-wa">
+      <button class="modal-close wa-close" onclick="closeModal('modalWhatsApp')" aria-label="Fechar">&times;</button>
+      
+      <div class="whatsapp-modal-head">
+        <div class="wa-avatar-box">
+          <img src="assets/logo-prime-wealth.jpg" alt="Prime Wealth Avatar" class="wa-avatar-img">
+          <span class="dot-online-status"></span>
+        </div>
+        <div class="wa-contact-info">
+          <h4>Prime Wealth • Atendimento Oficial</h4>
+          <span class="online-status"><span class="dot-green"></span> Online agora • Verificado <i class="fa-solid fa-circle-check text-gold"></i></span>
+        </div>
+      </div>
+
+      <!-- Histórico de Mensagens com Rolagem -->
+      <div class="wa-chat-body" id="waChatMessages">
+        <div class="wa-chat-date-pill">Hoje</div>
+        
+        <div class="wa-message received">
+          <p>Olá! Bem-vindo à <strong>Prime Wealth Investimentos</strong>. 👋</p>
+          <p>Sou a assistente virtual e nossos assessores certificados estão a postos. Como posso te orientar hoje?</p>
+          <span class="wa-time">Agora <i class="fa-solid fa-check-double text-blue"></i></span>
+        </div>
+      </div>
+
+      <!-- Opções Rápidas Clicáveis com Resposta Instantânea -->
+      <div class="wa-quick-options" id="waQuickOptions">
+        <span class="wa-options-title"><i class="fa-regular fa-comment-dots"></i> Toque em uma dúvida comum:</span>
+        <div class="wa-chips-row">
+          <button type="button" class="wa-chip-btn" onclick="sendInteractiveWaOption('como-abrir-conta')">
+            <i class="fa-solid fa-user-plus"></i> Como abrir conta?
+          </button>
+          <button type="button" class="wa-chip-btn" onclick="sendInteractiveWaOption('falar-assessor')">
+            <i class="fa-solid fa-user-tie"></i> Falar com assessor
+          </button>
+          <button type="button" class="wa-chip-btn" onclick="sendInteractiveWaOption('taxas-custos')">
+            <i class="fa-solid fa-percent"></i> Taxas e Custos
+          </button>
+          <button type="button" class="wa-chip-btn" onclick="sendInteractiveWaOption('garantia-fgc')">
+            <i class="fa-solid fa-shield-virus"></i> Segurança e FGC
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Envio Interativa -->
+      <form class="wa-input-bar" id="waForm" onsubmit="handleWaInputSubmit(event)">
+        <input type="text" id="waCustomInput" placeholder="Digite sua dúvida ou mensagem..." autocomplete="off">
+        <button type="submit" class="wa-send-btn" aria-label="Enviar Mensagem">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Ouvidoria -->
+  <div class="modal-backdrop" id="modalOuvidoria" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeModal('modalOuvidoria')" aria-label="Fechar">&times;</button>
+      <div class="modal-header">
+        <div class="modal-logo-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+        <h3>Ouvidoria Institucional Prime Wealth</h3>
+        <p>A Ouvidoria atua com independência e imparcialidade na resolução de demandas que não foram solucionadas nos canais usuais.</p>
+      </div>
+      <div class="modal-content-text">
+        <div class="ouvidoria-channel-row">
+          <i class="fa-solid fa-phone"></i>
+          <div>
+            <strong>0800 782 9000</strong>
+            <span>Atendimento em dias úteis, das 09h às 18h. Ligação gratuita para todo o território nacional.</span>
+          </div>
+        </div>
+        <div class="ouvidoria-channel-row">
+          <i class="fa-solid fa-envelope"></i>
+          <div>
+            <strong>ouvidoria@primewealth.com.br</strong>
+            <span>Prazo regulamentar de resposta: até 10 dias úteis com número de protocolo.</span>
+          </div>
+        </div>
+        <div class="ouvidoria-channel-row">
+          <i class="fa-solid fa-building-shield"></i>
+          <div>
+            <strong>Órgãos Reguladores Externos:</strong>
+            <span>Caso sua solicitação já tenha sido apreciada pela Ouvidoria, você poderá acionar o SAC da CVM ou o BACEN.</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-gold btn-block" onclick="closeModal('modalOuvidoria')">Compreendi</button>
+    </div>
+  </div>
+
+  <!-- Modal Termos de Compliance e LGPD -->
+  <div class="modal-backdrop" id="modalCompliance" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-lg">
+      <button class="modal-close" onclick="closeModal('modalCompliance')" aria-label="Fechar">&times;</button>
+      <div class="modal-header">
+        <h3 id="complianceModalTitle">Governança, Privacidade e Conformidade</h3>
+      </div>
+      <div class="compliance-modal-body" id="complianceModalBody">
+        <!-- Preenchido via app.js -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-gold" onclick="closeModal('modalCompliance')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts do Projeto -->
+  <script src="js/simulator.js"></script>
+  <script src="js/suitability.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
